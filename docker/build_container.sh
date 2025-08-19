@@ -5,7 +5,7 @@ set -eou pipefail
 cd $(git rev-parse --show-toplevel)
 
 IMAGE_REGISTRY=${IMAGE_REGISTRY:-"ghcr.io"}
-REPO_NAMESPACE=${GITHUB_REPOSITORY_OWNER:-"taranis-ai"}
+REPO_NAMESPACE=${GITHUB_REPOSITORY_OWNER:-"taranis-ai-llm"}
 REPO="${IMAGE_REGISTRY}/${REPO_NAMESPACE}"
 GIT_INFO=$(./docker/git_info.sh)
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD | sed 's/[^a-zA-Z0-9_.-]/_/g')

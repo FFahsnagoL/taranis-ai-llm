@@ -180,8 +180,8 @@ services:
     deploy:
       restart_policy:
         condition: always
-    image: "${DOCKER_IMAGE_NAMESPACE}/taranis-summarize-bot:${TARANIS_BOT_TAG:-latest}"
-    environment:
+    image: "ghcr.io/taranis-ai/taranis-summarize-bot:${TARANIS_BOT_TAG:-latest}"
+    enviroment:  
       API_KEY: "${BOT_API_KEY}"
       DEBUG: "${DEBUG:-False}"
     logging:
@@ -215,7 +215,7 @@ services:
     deploy:
       restart_policy:
         condition: always
-    image: "${DOCKER_IMAGE_NAMESPACE}/taranis-nlp-bot:${TARANIS_BOT_TAG:-latest}"
+    image: "ghcr.io/taranis-ai/taranis-nlp-bot:${TARANIS_BOT_TAG:-latest}"
     environment:
       API_KEY: "${BOT_API_KEY}"
       DEBUG: "${DEBUG:-False}"
@@ -233,7 +233,7 @@ services:
     deploy:
       restart_policy:
         condition: always
-    image: "${DOCKER_IMAGE_NAMESPACE}/taranis-story-clustering-bot:${TARANIS_BOT_TAG:-latest}"
+    image: "ghcr.io/taranis-ai/taranis-story-clustering-bot:${TARANIS_BOT_TAG:-latest}"    
     environment:
       API_KEY: "${BOT_API_KEY}"
       DEBUG: "${DEBUG:-False}"
@@ -251,7 +251,7 @@ services:
     deploy:
       restart_policy:
         condition: always
-    image: "${DOCKER_IMAGE_NAMESPACE}/taranis-sentiment-bot:${TARANIS_BOT_TAG:-latest}"
+    image: "ghcr.io/taranis-ai/taranis-sentiment-bot:${TARANIS_BOT_TAG:-latest}"
     environment:
       API_KEY: "${BOT_API_KEY}"
       DEBUG: "${DEBUG:-False}"
@@ -263,7 +263,7 @@ services:
 
 
   rabbitmq:
-    image: "${DOCKER_IMAGE_NAMESPACE}/rabbitmq:latest"
+    image:  "ghcr.io/taranis-ai/rabbitmq:latest"
     deploy:
       restart_policy:
         condition: always
@@ -289,7 +289,7 @@ services:
         max-file: "10"
 
   sse:
-    image: "${DOCKER_IMAGE_NAMESPACE}/sse-broker:latest"
+    image: "ghcr.io/taranis-ai/sse-broker:latest"
     deploy:
       restart_policy:
         condition: always
