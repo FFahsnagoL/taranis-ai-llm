@@ -15,6 +15,7 @@ class BotTask(Task):
     def __init__(self):
         self.core_api = CoreApi()
         self.bots = {
+            "auto_bot": worker.bots.AutoBot(),
             "analyst_bot": worker.bots.AnalystBot(),
             "grouping_bot": worker.bots.GroupingBot(),
             "tagging_bot": worker.bots.TaggingBot(),

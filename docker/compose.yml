@@ -190,6 +190,23 @@ services:
         max-size: "200k"
         max-file: "10"
 
+  auto_bot:
+    depends_on:
+      workers:
+        condition: service_healthy
+    deploy:
+      restart_policy:
+        condition: always
+    image: ghcr.io/ffahsnagol/auto_bot:latest
+    environment:
+      API_KEY: "${BOT_API_KEY}"
+      GEMINI_API_KEY: "${GEMINI_API_KEY}"
+      DEBUG: "${DEBUG:-False}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
 
   nlp_bot:
     depends_on:

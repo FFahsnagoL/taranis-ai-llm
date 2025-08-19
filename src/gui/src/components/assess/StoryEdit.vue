@@ -386,6 +386,19 @@ export default {
       }
     }
 
+     async function triggerAutoBot() {
+      try {
+        const result = await triggerBot(
+          'auto_bot',
+          props.storyProp.id
+        )
+        notifySuccess(result.data.message)
+        await fetchStoryData()
+      } catch (e) {
+        notifyFailure(e)
+      }
+    }
+
     async function triggerCyberSecClassifierBot() {
       try {
         const result = await triggerBot(
@@ -418,6 +431,7 @@ export default {
       submit,
       triggerSummaryBot,
       triggerSentimentAnalysisBot,
+      triggerAutoBot,
       triggerCyberSecClassifierBot,
       sentimentCounts,
       getSentimentColor,

@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     QUEUE_BROKER_URL: str | None = None
     QUEUE_BROKER_VHOST: str = "/"
     CELERY: dict[str, Any] | None = None
+    AUTO_API_ENDPOINT: str = "http://auto_bot:8000"
     SUMMARY_API_ENDPOINT: str = "http://summary_bot:8000"
     NLP_API_ENDPOINT: str = "http://nlp_bot:8000"
     STORY_API_ENDPOINT: str = "http://story_bot:8000"

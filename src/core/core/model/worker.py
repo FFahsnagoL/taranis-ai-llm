@@ -21,6 +21,7 @@ class COLLECTOR_TYPES(StrEnum):
 
 
 class BOT_TYPES(StrEnum):
+    AUTO_BOT = auto()
     ANALYST_BOT = auto()
     GROUPING_BOT = auto()
     NLP_BOT = auto()
@@ -56,6 +57,7 @@ class WORKER_TYPES(StrEnum):
     MANUAL_COLLECTOR = auto()
     RT_COLLECTOR = auto()
     MISP_COLLECTOR = auto()
+    AUTO_BOT = auto()
     ANALYST_BOT = auto()
     GROUPING_BOT = auto()
     NLP_BOT = auto()

@@ -181,6 +181,18 @@ workers = [
         ],
         "description": "Bot for analyzing sentiment of news items",
     },
+     {
+        "type": "AUTO_BOT",
+        "name": "Auto Bot",
+        "parameters": [
+            {"parameter": "ITEM_FILTER"},
+            {"parameter": "BOT_API_KEY"},
+            {"parameter": "BOT_ENDPOINT", "value": "http://auto_bot:8000"},
+            {"parameter": "RUN_AFTER_COLLECTOR", "type": "switch", "value": "true"},
+            {"parameter": "REFRESH_INTERVAL", "type": "cron_interval"},
+        ],
+        "description": "Bot for analyzing news items",
+    },
     {
         "type": "CYBERSEC_CLASSIFIER_BOT",
         "name": "Cybersecurity classification bot",
@@ -332,6 +344,16 @@ bots = [
         "type": "STORY_BOT",
         "parameters": [
             {"parameter": "ITEM_FILTER", "value": "limit=666"},
+        ],
+    },
+    {
+        "name": "Auto Bot",
+        "description": "Bot for analyzing news items",
+        "type": "AUTO_BOT",
+        "parameters": [
+            {"parameter": "ITEM_FILTER"},
+            {"parameter": "RUN_AFTER_COLLECTOR", "type": "switch"},
+            {"parameter": "REFRESH_INTERVAL", "type": "cron_interval"},
         ],
     },
     {
