@@ -13,15 +13,14 @@ CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD | sed 's/[^a-zA-Z0-9_.-]/_/g')
 echo "Building containers for branch ${CURRENT_BRANCH} on ${REPO} with git info ${GIT_INFO}"
 
 build_core() {
-  docker buildx build --file docker/Containerfile.core \
+  docker buildx build --no-cache --file docker/Containerfile.core \
     --build-arg git_info="${GIT_INFO}" \
     --tag "${REPO}/taranis-core:latest" \
     --tag "${REPO}/taranis-core:${CURRENT_BRANCH}" \
     --load .
 }
-
 build_worker() {
-  docker buildx build --file docker/Containerfile.worker \
+  docker buildx build  --file docker/Containerfile.worker \
     --build-arg git_info="${GIT_INFO}" \
     --tag "${REPO}/taranis-worker:latest" \
     --tag "${REPO}/taranis-worker:${CURRENT_BRANCH}" \
@@ -29,7 +28,7 @@ build_worker() {
 }
 
 build_gui() {
-  docker buildx build --file docker/Containerfile.gui \
+  docker buildx build --no-cache  --file docker/Containerfile.gui \
     --build-arg git_info="${GIT_INFO}" \
     --tag "${REPO}/taranis-gui:latest" \
     --tag "${REPO}/taranis-gui:${CURRENT_BRANCH}" \
@@ -37,7 +36,7 @@ build_gui() {
 }
 
 build_frontend() {
-  docker buildx build --file docker/Containerfile.frontend \
+  docker buildx build --no-cache  --file docker/Containerfile.frontend \
     --build-arg git_info="${GIT_INFO}" \
     --tag "${REPO}/taranis-frontend:latest" \
     --tag "${REPO}/taranis-frontend:${CURRENT_BRANCH}" \
@@ -57,9 +56,9 @@ else
       build_core
       ;;
     worker)
-      echo "Building worker container..."
-      build_worker
-      ;;
+    echo "Building worker container..."
+    build_worker
+    ;;
     gui)
       echo "Building GUI container..."
       build_gui

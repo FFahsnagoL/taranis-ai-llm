@@ -32,6 +32,8 @@ class Bot(BaseModel):
         self.index = Bot.get_highest_index() + 1
         self.parameters = Worker.parse_parameters(type, parameters)
 
+        logger.info(f"Bot created/loaded: id={self.id}, name={self.name}, type={self.type}, index={self.index}")
+
     @classmethod
     def update(cls, bot_id, data) -> "Bot | None":
         bot = cls.get(bot_id)
@@ -49,6 +51,7 @@ class Bot(BaseModel):
                 bot.index = index
         db.session.commit()
         bot.schedule_bot()
+        logger.info(f"Bot updated: id={bot.id}, name={bot.name}, type={bot.type}, parameters={[p.parameter for p in bot.parameters]}")
         return bot
 
     @classmethod
@@ -69,7 +72,9 @@ class Bot(BaseModel):
 
     @classmethod
     def get_all_by_type(cls, filter_type: str):
-        return cls.get_filtered(db.select(cls).where(cls.type == filter_type))
+        bots = cls.get_filtered(db.select(cls).where(cls.type == filter_type))
+        logger.info(f"Fetched {len(bots)} bots of type {filter_type}: {[bot.name for bot in bots]}")
+        return bots
 
     @classmethod
     def get_post_collection(cls) -> Sequence[str]:

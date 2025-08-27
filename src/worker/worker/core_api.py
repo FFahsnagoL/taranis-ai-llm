@@ -117,6 +117,10 @@ class CoreApi:
             return self.api_get(url="/worker/word-lists?usage=4&with_entries=true")
         except Exception:
             return None
+        
+    def get_news_item_attributes(self, news_item_id):
+        url = f"/bots/news-item/{news_item_id}/attributes"
+        return self.api_get(url)
 
     def update_news_item(self, news_id: str, data) -> dict | None:
         try:
@@ -218,7 +222,8 @@ class CoreApi:
         except Exception:
             logger.exception("Cannot add or update story.")
             return None
-
+        
+    
     def store_task_result(self, data) -> dict | None:
         try:
             return self.api_post(url="/tasks/", json_data=data)

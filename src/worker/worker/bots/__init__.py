@@ -11,7 +11,7 @@ from worker.bots.sentiment_analysis_bot import SentimentAnalysisBot
 from worker.bots.cybersec_classifier_bot import CyberSecClassifierBot
 
 __all__ = [
-    "AutoBot"
+    "AutoBot",
     "AnalystBot",
     "GroupingBot",
     "NLPBot",

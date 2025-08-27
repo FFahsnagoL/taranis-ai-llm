@@ -4,6 +4,7 @@ from enum import StrEnum, auto
 from sqlalchemy.sql import Select
 from sqlalchemy.orm import Mapped, relationship
 
+from core.log import logger
 from core.managers.db_manager import db
 from core.model.parameter_value import ParameterValue
 from core.model.base_model import BaseModel
@@ -21,7 +22,6 @@ class COLLECTOR_TYPES(StrEnum):
 
 
 class BOT_TYPES(StrEnum):
-    AUTO_BOT = auto()
     ANALYST_BOT = auto()
     GROUPING_BOT = auto()
     NLP_BOT = auto()
@@ -32,6 +32,7 @@ class BOT_TYPES(StrEnum):
     WORDLIST_BOT = auto()
     SENTIMENT_ANALYSIS_BOT = auto()
     CYBERSEC_CLASSIFIER_BOT = auto()
+    AUTO_BOT = auto()
 
 
 class PRESENTER_TYPES(StrEnum):
@@ -57,7 +58,6 @@ class WORKER_TYPES(StrEnum):
     MANUAL_COLLECTOR = auto()
     RT_COLLECTOR = auto()
     MISP_COLLECTOR = auto()
-    AUTO_BOT = auto()
     ANALYST_BOT = auto()
     GROUPING_BOT = auto()
     NLP_BOT = auto()
@@ -79,6 +79,7 @@ class WORKER_TYPES(StrEnum):
     MISP_PUBLISHER = auto()
     MISP_CONNECTOR = auto()
     PPN_COLLECTOR = auto()
+    AUTO_BOT = auto()
 
 
 class CONNECTOR_TYPES(StrEnum):
@@ -110,6 +111,8 @@ class Worker(BaseModel):
         self.type = type
         self.category = type.split("_")[-1]
         self.parameters = ParameterValue.get_or_create_from_list(parameters)
+        
+        logger.info(f"Worker created/loaded: id={self.id}, name={self.name}, type={self.type}, catagrory={self.category}")
 
     @classmethod
     def add(cls, data) -> tuple[dict[str, str], int]:

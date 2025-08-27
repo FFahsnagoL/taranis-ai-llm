@@ -85,7 +85,6 @@ class COLLECTOR_TYPES(StrEnum):
 
 
 class BOT_TYPES(StrEnum):
-    AUTO_BOT = auto()
     ANALYST_BOT = auto()
     GROUPING_BOT = auto()
     NLP_BOT = auto()
@@ -96,6 +95,7 @@ class BOT_TYPES(StrEnum):
     WORDLIST_BOT = auto()
     SENTIMENT_ANALYSIS_BOT = auto()
     CYBERSEC_CLASSIFIER_BOT = auto()
+    AUTO_BOT = auto()
 
     @classmethod
     def _missing_(cls, value):
@@ -145,7 +145,6 @@ class WORKER_TYPES(StrEnum):
     MANUAL_COLLECTOR = auto()
     RT_COLLECTOR = auto()
     MISP_COLLECTOR = auto()
-    AUTO_BOT = auto()
     ANALYST_BOT = auto()
     GROUPING_BOT = auto()
     NLP_BOT = auto()
@@ -167,6 +166,7 @@ class WORKER_TYPES(StrEnum):
     MISP_PUBLISHER = auto()
     MISP_CONNECTOR = auto()
     PPN_COLLECTOR = auto()
+    AUTO_BOT = auto()
 
     @classmethod
     def _missing_(cls, value):

@@ -17,10 +17,12 @@ class NewsItemTag(BaseModel):
     tag_type: Mapped[str] = db.Column(db.String(255))
     story_id: Mapped[str] = db.Column(db.ForeignKey("story.id", ondelete="CASCADE"))
     story: Mapped["Story"] = relationship("Story", back_populates="tags")
+    checked: Mapped[bool] = db.Column(db.Boolean, default=False, nullable=False)
 
-    def __init__(self, name, tag_type):
+    def __init__(self, name, tag_type, checked=False):
         self.name = name
         self.tag_type = tag_type
+        self.checked = checked
 
     @classmethod
     def get_filtered_tags(cls, filter_args: dict) -> dict[str, str]:
@@ -121,7 +123,7 @@ class NewsItemTag(BaseModel):
             else:
                 raise ValueError(f"Invalid tag format for key '{tag_key}': {type(tag_data).__name__} - must be str or dict")
                 
-            parsed_tags[name] = NewsItemTag(name=name, tag_type=tag_type)
+            parsed_tags[name] = NewsItemTag(name=name, tag_type=tag_type, checked=False)
 
         return parsed_tags
 

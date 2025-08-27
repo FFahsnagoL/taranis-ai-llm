@@ -181,14 +181,13 @@ workers = [
         ],
         "description": "Bot for analyzing sentiment of news items",
     },
-     {
+    {
         "type": "AUTO_BOT",
         "name": "Auto Bot",
         "parameters": [
-            {"parameter": "ITEM_FILTER"},
             {"parameter": "BOT_API_KEY"},
             {"parameter": "BOT_ENDPOINT", "value": "http://auto_bot:8000"},
-            {"parameter": "RUN_AFTER_COLLECTOR", "type": "switch", "value": "true"},
+            {"parameter": "RUN_AFTER_COLLECTOR", "type": "switch"},
             {"parameter": "REFRESH_INTERVAL", "type": "cron_interval"},
         ],
         "description": "Bot for analyzing news items",
@@ -346,16 +345,7 @@ bots = [
             {"parameter": "ITEM_FILTER", "value": "limit=666"},
         ],
     },
-    {
-        "name": "Auto Bot",
-        "description": "Bot for analyzing news items",
-        "type": "AUTO_BOT",
-        "parameters": [
-            {"parameter": "ITEM_FILTER"},
-            {"parameter": "RUN_AFTER_COLLECTOR", "type": "switch"},
-            {"parameter": "REFRESH_INTERVAL", "type": "cron_interval"},
-        ],
-    },
+   
     {
         "name": "Sentiment Analysis Bot",
         "description": "Bot for analyzing sentiment of news items",
@@ -375,6 +365,11 @@ bots = [
         "name": "Cybersecurity Classifier Bot",
         "description": "Bot for classifying news items into cybersecurity/non-cybersecurity related",
         "type": "CYBERSEC_CLASSIFIER_BOT",
+    },
+    {
+        "name": "Auto Bot",
+        "description": "Bot for analyzing news items",
+        "type": "AUTO_BOT",
     },
 ]
 

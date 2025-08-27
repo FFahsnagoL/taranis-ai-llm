@@ -54,7 +54,7 @@ services:
       PRE_SEED_PASSWORD_USER: "${PRE_SEED_PASSWORD_USER:-user}"
       JWT_SECRET_KEY: "${JWT_SECRET_KEY}"
       API_KEY: "${API_KEY}"
-      DEBUG: "${DEBUG:-False}"
+      DEBUG: "${DEBUG:-True}"
     volumes:
       - "core_data:/app/data"
     healthcheck:
@@ -108,7 +108,7 @@ services:
       TARANIS_CORE_URL: "${TARANIS_CORE_URL:-http://core:8080/api}"
       APPLICATION_ROOT: "${TARANIS_BASE_PATH:-/}frontend"
       JWT_SECRET_KEY: "${JWT_SECRET_KEY}"
-      DEBUG: "${DEBUG:-False}"
+      DEBUG: "${DEBUG:-True}"
     logging:
       driver: "json-file"
       options:
@@ -159,7 +159,7 @@ services:
       QUEUE_BROKER_USER: "${RABBITMQ_USER:-taranis}"
       QUEUE_BROKER_PASSWORD: "${RABBITMQ_PASSWORD:-supersecret}"
       WORKER_TYPES: '["Presenters", "Publishers", "Bots", "Connectors"]'
-      DEBUG: "${DEBUG:-False}"
+      DEBUG: "${DEBUG:-True}"
     healthcheck:
       test: ["CMD-SHELL", "WORKER_TYPES='[]' celery --app worker status | grep $(hostname) | grep -q 'OK'"]
       interval: 30s
@@ -172,7 +172,6 @@ services:
         max-size: "200k"
         max-file: "10"
 
-
   summary_bot:
     depends_on:
       workers:
@@ -180,8 +179,8 @@ services:
     deploy:
       restart_policy:
         condition: always
-    image: "ghcr.io/taranis-ai/taranis-summarize-bot:${TARANIS_BOT_TAG:-latest}"
-    enviroment:  
+    image: "ghcr.io/taranis-ai/taranis-summarize-bot:${TARANIS_BOT_TAG:-latest}"    
+    environment:
       API_KEY: "${BOT_API_KEY}"
       DEBUG: "${DEBUG:-False}"
     logging:
@@ -200,8 +199,8 @@ services:
     image: ghcr.io/ffahsnagol/auto_bot:latest
     environment:
       API_KEY: "${BOT_API_KEY}"
-      GEMINI_API_KEY: "${GEMINI_API_KEY}"
-      DEBUG: "${DEBUG:-False}"
+      #GEMINI_API_KEY: "${GEMINI_API_KEY}"
+      DEBUG: "${DEBUG:-True}"
     logging:
       driver: "json-file"
       options:

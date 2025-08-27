@@ -54,7 +54,7 @@ root = "../.."
 dev = ["ruff", "pytest", "pytest-flask", "lxml", "build", "wheel", "setuptools_scm", "requests-mock", "pytest-playwright", "playwright", "djlint"]
 
 [project.urls]
-"Source Code" = "https://github.com/taranis-ai/taranis-ai"
+"Source Code" = "https://github.com/ffahsnagol/taranis-ai-llm"
 
 [tool.ruff]
 line-length = 142
@@ -98,3 +98,6 @@ indent=2
 
 [tool.uv]
 config-settings = { editable_mode = "compat" }
+
+[tool.uv.sources]
+taranis-models = { path = "../models"}

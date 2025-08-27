@@ -38,7 +38,19 @@ class BaseBot:
         filter_dict["exclude_attr"] = self.type
 
         return filter_dict
-
+    def add_or_update_story(self, story: dict) -> dict | None:
+        """
+        Sends an API request to add or update a story.
+        """
+        try:
+            return self.bot_api.api_post(
+                url="/worker/stories",  # The URL from your provided code
+                json_data=story,
+            )
+        except Exception:
+            logger.exception(f"Failed to add or update story {story.get('id')}.")
+            return None
+        
     def update_filter_for_pagination(self, filter_dict, limit=100):
         filter_dict["limit"] = limit
         if "offset" in filter_dict:

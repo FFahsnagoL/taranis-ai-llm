@@ -19,11 +19,13 @@ class NewsItemAttribute(BaseModel):
     binary_mime_type: Mapped[str] = db.Column(db.String())
     binary_data: Mapped = deferred(db.Column(db.LargeBinary))
     created: Mapped[datetime] = db.Column(db.DateTime, default=datetime.now)
+    checked: Mapped[bool] = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, key, value, binary_mime_type=None, binary_value=None, id=None):
         self.id = id or str(uuid.uuid4())
         self.key = key
         self.value = value
+        self.checked = False
         if binary_mime_type:
             self.binary_mime_type = binary_mime_type
 

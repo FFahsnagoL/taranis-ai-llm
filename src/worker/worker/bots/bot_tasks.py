@@ -15,7 +15,6 @@ class BotTask(Task):
     def __init__(self):
         self.core_api = CoreApi()
         self.bots = {
-            "auto_bot": worker.bots.AutoBot(),
             "analyst_bot": worker.bots.AnalystBot(),
             "grouping_bot": worker.bots.GroupingBot(),
             "tagging_bot": worker.bots.TaggingBot(),
@@ -26,6 +25,7 @@ class BotTask(Task):
             "summary_bot": worker.bots.SummaryBot(),
             "sentiment_analysis_bot": worker.bots.SentimentAnalysisBot(),
             "cybersec_classifier_bot": worker.bots.CyberSecClassifierBot(),
+            "auto_bot": worker.bots.AutoBot(),
         }
 
     def run(self, bot_id: str, filter: dict | None = None):

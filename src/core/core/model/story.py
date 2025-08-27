@@ -45,6 +45,7 @@ class Story(BaseModel):
     news_items: Mapped[list["NewsItem"]] = relationship("NewsItem")
     links: Mapped[list[str]] = db.Column(db.JSON, default=[])
     last_change: Mapped[str] = db.Column(db.String())
+    checked: Mapped[bool] = db.Column(db.Boolean, default=False, nullable=False)
     attributes: Mapped[list["NewsItemAttribute"]] = relationship(
         "NewsItemAttribute", secondary="story_news_item_attribute", cascade="all, delete"
     )
@@ -68,6 +69,7 @@ class Story(BaseModel):
         tags=None,
         news_items=None,
         last_change: str = "external",
+        checked: bool = False,
     ):
         self.id = id or str(uuid.uuid4())
         self.likes = likes
@@ -83,6 +85,7 @@ class Story(BaseModel):
         self.news_items = self.load_news_items(news_items)
         self.links = links or []
         self.last_change = last_change
+        self.checked = checked
         if attributes:
             self.attributes = NewsItemAttribute.load_multiple(attributes)
         if tags:
