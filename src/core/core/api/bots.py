@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from core.managers.sse_manager import sse_manager
 from core.log import logger
 from core.managers.auth_manager import api_key_required
-from core.model import news_item, bot, story
+from core.model import news_item, bot, story, news_item_attribute
 from core.managers.decorators import extract_args
 from core.config import Config
 
@@ -41,6 +41,19 @@ class BotUnGroupAction(MethodView):
         response, code = story.Story.remove_news_items_from_story(newsitem_ids)
         sse_manager.news_items_updated()
         return response, code
+    
+class NewsItemAttributes(MethodView):
+    @api_key_required
+    def get(self, news_item_id):
+        # Fetch the news item
+        news_item_obj = news_item.NewsItem.get(news_item_id)
+        if not news_item_obj:
+            return {"error": "Invalid news item id"}, 404
+
+        # Return a list of attributes as key/value pairs
+        return {
+            "attributes": [attr.to_small_dict() for attr in news_item_obj.attributes]
+        }, 200
 
 
 class NewsItem(MethodView):
@@ -130,6 +143,10 @@ def initialize(app: Flask):
     bots_bp.add_url_rule(
         "/news-item/<string:news_item_id>/attributes",
         view_func=UpdateNewsItemAttributes.as_view("update_news_item_attributes"),
+    )
+    bots_bp.add_url_rule(
+    "/news-item/<string:news_item_id>/attributes",
+    view_func=NewsItemAttributes.as_view("get_news_item_attributes"),
     )
     bots_bp.add_url_rule(
         "/story/<string:story_id>",

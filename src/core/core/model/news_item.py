@@ -87,7 +87,10 @@ class NewsItem(BaseModel):
         self.published = published if isinstance(published, datetime) else datetime.fromisoformat(published)
         self.story_id = story_id
         self.attributes = NewsItemAttribute.load_multiple(attributes or [])
-
+        if not self.attributes:
+            self.attributes = [
+        NewsItemAttribute(key="checked", value="false"),
+                                ]   
     @classmethod
     def get_hash(cls, title: str = "", link: str = "", content: str = "") -> str:
         if not title and not link and not content:

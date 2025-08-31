@@ -118,8 +118,8 @@ class CoreApi:
         except Exception:
             return None
         
-    def get_news_item_attributes(self, news_item_id):
-        url = f"/bots/news-item/{news_item_id}/attributes"
+    def get_news_item_attributes(self, news_id):
+        url = f"/bots/news-item/{news_id}/attributes"
         return self.api_get(url)
 
     def update_news_item(self, news_id: str, data) -> dict | None:
