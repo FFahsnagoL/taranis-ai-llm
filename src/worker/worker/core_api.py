@@ -13,6 +13,8 @@ class CoreApi:
         self.headers = self.get_headers()
         self.verify = Config.SSL_VERIFICATION
         self.timeout = Config.REQUESTS_TIMEOUT
+        self.access_token = None
+        self.auth_headers = {}
 
     def get_headers(self) -> dict[str, str]:
         return {"Authorization": f"Bearer {self.api_key}", "Content-type": "application/json"}
@@ -237,3 +239,65 @@ class CoreApi:
             return requests.get(url=url, headers=self.headers, verify=self.verify, timeout=self.timeout)
         except Exception as e:
             raise e
+    def create_report(self, report_data: dict):
+        """
+        Send a report item to the /analyze/report-items endpoint.
+        """
+        try:
+            return self.auth_post(
+            url="/analyze/report-items",
+            json_data=report_data,
+            )
+        except Exception:
+            logger.exception("Cannot send report item.")
+            return None
+        
+    def create_product(self, product_data: dict):
+        try:
+            return self.auth_post(
+            url="/publish/products",
+            json_data=product_data,
+            )
+        except Exception:
+            logger.exception("Cannot send product item.")
+            return None
+        
+    def publish_product(self, product_id: str, publisher_id: str):
+        try:
+            return self.auth_post(
+            url = f"/publish/products/{product_id}/publishers/{publisher_id}"
+            )
+        except Exception:
+            logger.exception("Cannot publish product.")
+            return None
+
+    def authenticate(self,username: str, password: str) -> str:
+        url = f"{self.api_url}/auth/login"   # adjust if different
+        response = requests.post(
+            url,
+            json={"username": username, "password": password},
+            verify=self.verify,
+            timeout=self.timeout
+        )
+        response.raise_for_status()
+        data = response.json()
+        self.access_token = data["access_token"]
+        # store token in headers for all future requests
+        self.auth_headers["Authorization"] = f"Bearer {self.access_token}"
+        return self.access_token , self.auth_headers
+    
+    def auth_post(self, url, json_data=None):
+        url = f"{self.api_url}{url}"
+        if not json_data:
+            json_data = {}
+
+        # copy headers so we don’t mutate the original
+       
+        response = requests.post(
+            url=url,
+            headers=self.auth_headers,
+            verify=self.verify,
+            json=json_data,
+            timeout=self.timeout
+        )
+        return self.check_response(response, url)

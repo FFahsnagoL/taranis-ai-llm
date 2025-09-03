@@ -89,8 +89,20 @@ class EMAILPublisher(BasePublisher):
             raise RuntimeError({"error": error_message}) from e
 
     def send_with_tls(self, context) -> dict:
-        with SMTP_SSL(self.smtp_address, self.smtp_port, context=context) as server:
-            return self.send_mail(server)
+        port = int(self.smtp_port)
+        if port == 465:
+        # Implicit SSL
+            with SMTP_SSL(self.smtp_address, port, context=context) as server:
+                return self.send_mail(server)
+        elif port == 587:
+        # Explicit TLS (STARTTLS)
+            with smtplib.SMTP(self.smtp_address, port) as server:
+                server.ehlo()
+                server.starttls(context=context)
+                server.ehlo()
+                return self.send_mail(server)
+        else:
+            raise RuntimeError(f"Unsupported TLS port: {self.smtp_port}")
 
     def send_without_tls(self) -> dict:
         try:

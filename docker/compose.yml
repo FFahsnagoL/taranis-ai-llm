@@ -303,8 +303,22 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
-
-
+  
+  #ftp_server:
+   # image: stilliard/pure-ftpd:hardened
+    #container_name: ftp_server
+    #environment:
+     # PUBLICHOST: 127.0.0.1        # Internal testing, can also use container name
+      #FTP_USER_NAME: testuser
+      #FTP_USER_PASS: testpass
+      #FTP_USER_HOME: /home/ftpusers/testuser
+    #volumes:
+    #  - ./ftpdata:/home/ftpusers/testuser
+    #ports:
+     # - "21:21"                    # FTP control port
+      #- "30000-30009:30000-30009"  # Passive FTP ports
+    #restart: always
+ 
 volumes:
   database_data:
   core_data:
