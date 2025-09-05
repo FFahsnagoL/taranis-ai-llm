@@ -11,6 +11,9 @@ class Settings(BaseSettings):
         extra = "ignore"
 
     API_KEY: str = "supersecret"
+    BOT_USERNAME: str = "" 
+    BOT_PASSWORD: str = ""
+    Publisher_ID: str = ""
     BOT_API_KEY: str | None = None
     TARANIS_CORE_URL: str = ""
     TARANIS_BASE_PATH: str = "/"

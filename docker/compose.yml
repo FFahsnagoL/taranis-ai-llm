@@ -155,6 +155,9 @@ services:
       TARANIS_CORE_URL: "${TARANIS_CORE_URL:-http://core:8080/api}"
       API_KEY: "${API_KEY}"
       BOT_API_KEY: "${BOT_API_KEY}"
+      BOT_USERNAME: "${BOT_USERNAME}"
+      BOT_PASSWORD: "${BOT_PASSWORD}"
+      PUBLISHER_ID: "${PUBLISHER_ID}"
       QUEUE_BROKER_HOST: "rabbitmq"
       QUEUE_BROKER_USER: "${RABBITMQ_USER:-taranis}"
       QUEUE_BROKER_PASSWORD: "${RABBITMQ_PASSWORD:-supersecret}"
@@ -199,7 +202,7 @@ services:
     image: ghcr.io/ffahsnagol/auto_bot:latest
     environment:
       API_KEY: "${BOT_API_KEY}"
-      #GEMINI_API_KEY: "${GEMINI_API_KEY}"
+      GEMINI_API_KEY: "${GEMINI_API_KEY}"
       DEBUG: "${DEBUG:-True}"
     logging:
       driver: "json-file"
@@ -304,20 +307,6 @@ services:
         max-size: "200k"
         max-file: "10"
   
-  #ftp_server:
-   # image: stilliard/pure-ftpd:hardened
-    #container_name: ftp_server
-    #environment:
-     # PUBLICHOST: 127.0.0.1        # Internal testing, can also use container name
-      #FTP_USER_NAME: testuser
-      #FTP_USER_PASS: testpass
-      #FTP_USER_HOME: /home/ftpusers/testuser
-    #volumes:
-    #  - ./ftpdata:/home/ftpusers/testuser
-    #ports:
-     # - "21:21"                    # FTP control port
-      #- "30000-30009:30000-30009"  # Passive FTP ports
-    #restart: always
  
 volumes:
   database_data:
