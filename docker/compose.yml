@@ -203,7 +203,14 @@ services:
     environment:
       API_KEY: "${BOT_API_KEY}"
       GEMINI_API_KEY: "${GEMINI_API_KEY}"
+      GEMINI_MODEL: "${GEMINI_MODEL}"
+      VERTEX_MODEL: "${VERTEX_MODEL}"
+      VERTEX_PROJECT: "${VERTEX_PROJECT}"
+      VERTEX_LOCATION: "${VERTEX_LOCATION}"
       DEBUG: "${DEBUG:-True}"
+      GOOGLE_APPLICATION_CREDENTIALS: "/app/vertex.json"
+    volumes:
+      - /home/user/auto_bot/vertex.json:/app/vertex.json:ro
     logging:
       driver: "json-file"
       options:
