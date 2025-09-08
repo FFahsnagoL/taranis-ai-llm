@@ -84,7 +84,7 @@ class AutoBot(BaseBot):
             "Weekly Recap"
         ]
         translation_sources = [
-            {"name": "https://www.cert.se/feed.xml", "language": "swedish"}
+            {"name": "https://www.cert.se/feed/atom.xml", "language": "swedish"}
 
         ]
 
@@ -121,6 +121,9 @@ class AutoBot(BaseBot):
                     if ts["name"] in news_item_source:
                         logger.info(f"Translating news item from {ts['name']} ({ts['language']})")
                         translated_content = self.translate(ts["language"], combined_content)
+                        if translated_content == "":
+                            logger.error(f"Translation failed for news item {news_item_id} exiting")
+                            continue
                         combined_content = translated_content["result"]
                         story_payload = {
                             "id": story_id,
@@ -156,51 +159,59 @@ class AutoBot(BaseBot):
                     # Create a prompt for the llm
                 prompt_text = (
                         f"Analyze the following news story."
-                        f"If the story is relevant to university cybersecurity reply 'Yes slightly relevant' , 'Yes relevant', or ' Yes very relevant'"
+                        f"If the story is relevant to university cybersecurity reply 'Yes slightly relevant' , 'Yes relevant', or 'Yes very relevant'"
                         #f" followed by 3 short/concise bullet points explaining why. "
                         f"If the story is not relevant, reply 'No' "
                         f"Do not add any other text.\n\n"
-                        f"{combined_content}")
+                        f"{combined_content} :end Content")
 
-                time.sleep(30)  # Sleep for 15 seconds between requests to avoid rate limiting
-                logger.info(f"sending request to Vertex Prompt: \n {prompt_text}")
-                response = self.bot_api.api_post("/", {"prompt": prompt_text})
+                time.sleep(20)  # Sleep for 15 seconds between requests to avoid rate limiting
+                #logger.info(f"sending request to Vertex Prompt: \n {prompt_text}")
+                #response = self.bot_api.api_post("/", {"prompt": prompt_text})
+                vertex_response = self.send_llm_request(prompt_text, max_retries=4, base_delay=20.0)
 
-                if not response:
+                if not vertex_response["result"]:
+                    logger.error("All retries failed. Empty result returned.")
                     continue
-                if "error" in response:
-                    logger.error(response["error"])
-                    continue
+                else:
+                    logger.info(f"Final Vertex result: {vertex_response['result']}")
+                #if not response:
+                 #   continue
+                #if "error" in response:
+                  #  logger.error(response["error"])
+                 #   continue
                 #  Mark as checked 
+                logger.info(f"Received raw response from Vertex: {['raw_response']}")
+                # Step 3: Parse the new raw text response from the Gemini API
+                #logger.info(f"Received response from Vertex: vertex_response{response}")
+                response_text = (vertex_response.get("result")or "" ).strip().lower()
+                    #response.get("response") 
+                    
+                
+                logger.info(f"Vertex response text: {response_text}")    
+                reasons = []
+                relevance_level = "Irrelevant"  # Default to Irrelevant
+                #if "" in gemini_response_text: 
+                 #   continue   
                 if self.core_api.update_news_item_attributes( news_item_id,[{"key": "checked", "value": "true"}]):
                     logger.info(f"marked news item {news_item_id} as checked:")
-
-                # Step 3: Parse the new raw text response from the Gemini API
-                logger.info(f"Received response from Vertex: {response}")
-                gemini_response_text = (
-                    #response.get("response") 
-                    response.get("result") 
-                    or "" ).strip().lower()
-                
-                logger.info(f"Vertex response text: {gemini_response_text}")    
-                relevance_level = "Irrelevant"
-                reasons = []
-                    
                 #Check for "Yes" or "No" and parse accordingly
                 #text_lower = gemini_response_text.lower()
                 #first_line = gemini_response_text.splitlines()[0].lower() if gemini_response_text else ""
-                if "no" in gemini_response_text: 
+                if "no" in response_text:
+                    relevance_level = "Irrelevant" 
                     continue 
-                if "yes" in gemini_response_text:
-                    if "very relevant" in gemini_response_text:
+
+                if "yes" in response_text:
+                    if "very relevant" in response_text:
                         relevance_level = "Very Relevant"
-                        logger.info(f"{gemini_response_text} News item marked as Very Relevant.")   
-                    elif "slightly relevant" in gemini_response_text:
+                        logger.info(f"{response_text} News item marked as Very Relevant.")   
+                    elif "slightly relevant" in response_text:
                         relevance_level = "Slightly Relevant"
-                        logger.info(f"{gemini_response_text} News item marked as Slightly Relevant.")
+                        logger.info(f"{response_text} News item marked as Slightly Relevant.")
                     else:
                         relevance_level = "Relevant"
-                        logger.info(f"{gemini_response_text} News item marked as Relevant.")
+                        logger.info(f"{response_text} News item marked as Relevant.")
                 
                 
                      #Split the response to get the bullet points
@@ -215,21 +226,73 @@ class AutoBot(BaseBot):
                 
                    "category": relevance_level,
                     #"reasons": reasons,
-                    "raw_response": gemini_response_text,
+                    "raw_response": response_text,
                     "story_id": story_id,
                 }
                 
         return results
-    
-    def translate(self, language: str , text : str) -> str:
 
-        prompt_text = ( f"Translate the following {language} text to English with no additonal text:\n\n{text}")
-        translated =  self.bot_api.api_post("/translate", {"prompt": prompt_text})
+    
+    def send_llm_request(self, prompt: str, max_retries: int = 4, base_delay: float = 20.0) -> dict:
+
+        attempt = 0
+        gemini_response_text = ""
+        response = {}
+
+        while attempt < max_retries and gemini_response_text == "":
+            logger.info(f"[Attempt {attempt + 1}] Sending request to Vertex Prompt:\n{prompt}")
+            response = self.bot_api.api_post("/", {"prompt": prompt})
+
+            if not response:
+                logger.warning("No response received from Vertex API.")
+            elif "error" in response:
+                logger.error(f"Error from Vertex API: {response['error']}")
+            else:
+                logger.info(f"Received response from Vertex: {response}")
+                gemini_response_text = (response.get("result") or "").strip().lower()
+
+            if gemini_response_text == "":
+                attempt += 1
+                if attempt < max_retries:
+                    wait_time = base_delay * (2 ** (attempt - 1))  # exponential backoff
+                    logger.warning(f"Empty result. Retrying in {wait_time:.1f} seconds...")
+                    time.sleep(wait_time)
+
+        return {"result": gemini_response_text, "raw_response": response}
+
+    def translate(self, language: str, text: str, max_retries: int = 4, base_delay: float = 20.0) -> str:
+    
+        prompt_text = f"Translate the following {language} text to English with no additional text:\n\n{text}"
+        attempt = 0
+        translated = ""
+
+        while attempt <= max_retries:
+            response = self.bot_api.api_post("/translate", {"prompt": prompt_text})
+
+            # If API failed completely
+            if not response:
+                logger.warning("No response from API.")
+            elif "error" in response:
+                error_msg = str(response["error"])
+                logger.error(f"Translation error: {error_msg}")
+
+                # Retry only on 429 or 503
+                if "429" in error_msg or "503" in error_msg:
+                    attempt += 1
+                    if attempt <= max_retries:
+                        wait_time = base_delay * (2 ** (attempt - 1))
+                        logger.warning(f"Retrying in {wait_time:.1f} seconds due to {error_msg}...")
+                        time.sleep(wait_time)
+                        continue
+            else:
+                translated = response.get("result") or ""
+                break
+
+            attempt += 1
 
         logger.info(f"Translated text: {translated}")
-      
-        return translated
-            
+        return {"result": translated}
+    
     def publish_news(self, relevance_results: dict):
         stories_list = []
         for news_item_id, rev_data in relevance_results.items():
