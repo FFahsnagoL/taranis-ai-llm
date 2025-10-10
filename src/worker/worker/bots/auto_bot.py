@@ -46,9 +46,9 @@ class AutoBot(BaseBot):
         "Windows 10",
         "Windows 11",
         "SharePoint",
-        "Linux",
         "Ubuntu",
         "RedHat",
+        "Red Hat",
         "FreeBSD",
         "iOS",
         "iOS",
@@ -81,7 +81,9 @@ class AutoBot(BaseBot):
         "higher education"
         ]
         blacklist = [
-            "Weekly Recap"
+            "Weekly Recap",
+            "Threatsday",
+            "Weekly Letter v"
         ]
         translation_sources = [
             {"name": "https://www.cert.se/feed/atom.xml", "language": "swedish"}
@@ -158,11 +160,11 @@ class AutoBot(BaseBot):
                     continue
                     # Create a prompt for the llm
                 prompt_text = (
-                        f"Analyze the following news story."
-                        f"If the story is relevant to university cybersecurity reply 'Yes slightly relevant' , 'Yes relevant', or 'Yes very relevant'"
+                        f"Is the article relevant to university cybersecurity? "
+                        f"if the article is relevant reply 'Yes, slightly relevant' , 'Yes, relevant', or 'Yes, very relevant'."
                         #f" followed by 3 short/concise bullet points explaining why. "
-                        f"If the story is not relevant, reply 'No' "
-                        f"Do not add any other text.\n\n"
+                        f" If the article is not relevant, reply 'No'."
+                        #f"Do not add any other text.\n"
                         f"{combined_content} :end Content")
 
                 time.sleep(20)  # Sleep for 15 seconds between requests to avoid rate limiting
@@ -202,7 +204,7 @@ class AutoBot(BaseBot):
                     relevance_level = "Irrelevant" 
                     continue 
 
-                if "yes" in response_text:
+                if "yes," in response_text:
                     if "very relevant" in response_text:
                         relevance_level = "Very Relevant"
                         logger.info(f"{response_text} News item marked as Very Relevant.")   
