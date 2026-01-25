@@ -40,45 +40,7 @@ class AutoBot(BaseBot):
         results = {}
 
         whitelist = [
-        "Mac Os",
-        "macOS",
-        "mac OS"
-        "Windows 10",
-        "Windows 11",
-        "SharePoint",
-        "Ubuntu",
-        "RedHat",
-        "Red Hat",
-        "FreeBSD",
-        "iOS",
-        "iOS",
-        "Chrome",
-        "Firefox",
-        "Edge",
-        "Safari",
-        "WSUS",
-        "System Center",
-        "AOS(Alcatel)",
-        "FortiOS",
-        "Apache",
-        "Tomcat",
-        "IIS",
-        "BIND",
-        "Infoblox NIOS",
-        "Microsoft Active Directory",
-        "Active Directory",
-        "Postfix",
-        "Microsoft Exchange",
-        "Exchange",
-        "Sweden",
-        "Swedish",
-        "Scandi",
-        "Scandinavia",
-        "nordic",
-        "universit",
-        "university"
-        "universities",
-        "higher education"
+
         ]
         blacklist = [
             "Weekly Recap",
@@ -384,4 +346,5 @@ class AutoBot(BaseBot):
             #story["checked"] = True
             #self.add_or_update_story(story)
             # 
+
             # 
